@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.telecom.TelecomManager
 import android.util.Log
+import android.provider.Settings
+import android.net.Uri
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -49,8 +51,15 @@ class CallModule(private val reactContext: ReactApplicationContext) : ReactConte
     }
 
     @ReactMethod
-    fun addListener(eventName: String?) {
-        // No-op
+    fun requestOverlayPermission() {
+    if (!Settings.canDrawOverlays(reactContext)) {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:${reactContext.packageName}")
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        reactContext.startActivity(intent)
+    }
     }
 
     @ReactMethod

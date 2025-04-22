@@ -8,49 +8,59 @@ import {
   NativeModules,
   TouchableOpacity,
 } from 'react-native';
+import Navigation from './src/navigation/Navigation';
 
 const App = () => {
   const [callData, setCallData] = useState<string | null>(null);
 
   useEffect(() => {
-    let subscription: any; // 👈 Declare here so it's visible in cleanup
-
-    const requestPermissions = async () => {
+    const requestAllPermissions = async () => {
       try {
+        // Step 1: Overlay permission (opens Settings)
+        if (Platform.OS === 'android') {
+          const overlayGranted = await NativeModules.CallModule.requestOverlayPermission();
+          console.log('🧩 Overlay permission handled:', overlayGranted);
+        }
+  
+        // Step 2: Wait a little to let user finish overlay
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay to avoid clash
+  
+        // Step 3: Android runtime permissions
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
           PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
-          PermissionsAndroid.PERMISSIONS.ANSWER_PHONE_CALLS,
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          // PermissionsAndroid.PERMISSIONS.ANSWER_PHONE_CALLS, // Add if needed
         ]);
-
+  
         if (
           granted['android.permission.READ_PHONE_STATE'] === PermissionsAndroid.RESULTS.GRANTED &&
-          granted['android.permission.READ_CALL_LOG'] === PermissionsAndroid.RESULTS.GRANTED
+          granted['android.permission.READ_CALL_LOG'] === PermissionsAndroid.RESULTS.GRANTED &&
+          granted['android.permission.READ_CONTACTS'] === PermissionsAndroid.RESULTS.GRANTED
         ) {
-          console.log('✅ Permissions granted');
-
+          console.log('✅ All permissions granted');
+  
           const eventEmitter = new NativeEventEmitter(NativeModules.CallModule);
-          subscription = eventEmitter.addListener('IncomingCall', (data) => {
-            console.log('📞 Incoming call detected:-', data);
+          const subscription = eventEmitter.addListener('IncomingCall', (data) => {
+            console.log('📞 Incoming call detected:', data);
             setCallData(data);
           });
+  
+          return () => {
+            subscription.remove();
+          };
         } else {
-          console.warn('🚫 Permissions not granted');
+          console.warn('🚫 Some permissions not granted');
         }
+  
       } catch (err) {
-        console.error('⚠️ Error requesting permissions:', err);
+        console.error('⚠️ Error during permission flow:', err);
       }
     };
-
-    requestPermissions();
-
-    return () => {
-      if (subscription) {
-        subscription.remove(); // ✅ Safely remove if it exists
-        console.log('🧹 Event listener cleaned up');
-      }
-    };
+  
+    requestAllPermissions();
   }, []);
+  
 
   const requestDefaultDialer = async () => {
     try {
@@ -62,10 +72,9 @@ const App = () => {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, marginBottom: 20 }}>📲 Call Detection App</Text>
-
-      <TouchableOpacity
+    <>
+      <Navigation/>
+      {/* <TouchableOpacity
         onPress={requestDefaultDialer}
         style={{
           backgroundColor: 'teal',
@@ -81,8 +90,8 @@ const App = () => {
       <Text>👋 Hello!</Text>
       {callData && (
         <Text style={{ marginTop: 20, fontSize: 16 }}>📞 Incoming Call: {callData}</Text>
-      )}
-    </View>
+      )} */}
+    </>
   );
 };
 
