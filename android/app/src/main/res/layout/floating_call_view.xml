@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/floating_container"
-    android:layout_width="260dp"
+    android:layout_width="310dp"
     android:layout_height="156dp"
     android:background="@drawable/floating_background"
     android:padding="8dp">
@@ -20,9 +20,12 @@
 
     <!-- Caller Info Row -->
     <LinearLayout
+        android:id="@+id/callerInfoRow"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="36dp"
         android:gravity="center_vertical">
 
         <!-- Caller Image -->
@@ -46,9 +49,22 @@
             android:layout_weight="1"
             android:text="Incoming Call"
             android:textColor="@android:color/white"
-            android:textSize="14sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:ellipsize="end"
             android:maxLines="1" />
+
+        
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lastCallTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/callerInfoRow"
+        android:layout_marginTop="8dp"
+        android:text="Last call info"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
 
 </RelativeLayout>

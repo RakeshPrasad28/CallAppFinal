@@ -16,16 +16,14 @@ const App = () => {
   useEffect(() => {
     const requestAllPermissions = async () => {
       try {
-        // Step 1: Overlay permission (opens Settings)
         if (Platform.OS === 'android') {
           const overlayGranted = await NativeModules.CallModule.requestOverlayPermission();
           console.log('🧩 Overlay permission handled:', overlayGranted);
         }
   
-        // Step 2: Wait a little to let user finish overlay
         await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay to avoid clash
   
-        // Step 3: Android runtime permissions
+        
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE,
           PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
