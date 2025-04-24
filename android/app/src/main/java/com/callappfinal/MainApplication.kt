@@ -15,6 +15,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
+import com.wscodelabs.callLogs.CallLogPackage;
 
 class MainApplication : Application(), ReactApplication {
 
@@ -24,6 +25,7 @@ class MainApplication : Application(), ReactApplication {
             override fun getPackages(): List<ReactPackage> =
                 PackageList(this).packages.toMutableList().apply {
                     add(CallPackage()) // 👈 Register your custom package here
+                    add(CallLogPackage())
                 }
 
             override fun getJSMainModuleName(): String = "index"

@@ -17,7 +17,7 @@ export enum Fonts {
   Bold = 'Satoshi-Bold',
 }
 
-export const BOTTOM_TAB_HEIGHT = Platform.OS == 'ios' ? 90 : 70;
+export const BOTTOM_TAB_HEIGHT = Platform.OS == 'ios' ? 90 : 60;
 
 export const convertPodcast = (podcast: any) => {
   return {

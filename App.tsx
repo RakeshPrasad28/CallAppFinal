@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Navigation from './src/navigation/Navigation';
+import { Provider } from 'react-redux';
+import { store } from './src/state/store';
 
 const App = () => {
   const [callData, setCallData] = useState<string | null>(null);
@@ -70,26 +72,9 @@ const App = () => {
   };
 
   return (
-    <>
+    <Provider store={store}>
       <Navigation/>
-      {/* <TouchableOpacity
-        onPress={requestDefaultDialer}
-        style={{
-          backgroundColor: 'teal',
-          padding: 10,
-          borderRadius: 8,
-          marginVertical: 10,
-        }}>
-        <Text style={{ color: 'white', fontSize: 20 }}>
-          Tap to set as default dialer
-        </Text>
-      </TouchableOpacity>
-
-      <Text>👋 Hello!</Text>
-      {callData && (
-        <Text style={{ marginTop: 20, fontSize: 16 }}>📞 Incoming Call: {callData}</Text>
-      )} */}
-    </>
+    </Provider>
   );
 };
 
